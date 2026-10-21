@@ -119,13 +119,30 @@ sudo flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 -r ext-1.bin
 
 ### Write (high risk — only with verified backup offline)
 
+**Do not run** until [PREFLASH.md](PREFLASH.md) signoff is **GO**. Internal host **writes** to ME/IFD are blocked; use an **external** programmer.
+
+Stitched coreboot image (local, not in git): `out/blade_stealth_icl-stitched-16m.rom`  
+SHA-256 `3debd24dee9a2479b39802d1a789c578cea0b364f9d5ed5ac690438d417ec0f0` — FD/ME match vendor dump; BIOS is CBFS. Build recipe: [COREBOOT.md](COREBOOT.md).
+
 ```bash
-# Prefer region-limited layout once IFD tools are set up.
-# Full-chip example — DO NOT run until PREFLASH.md signoff is GO:
-# sudo flashrom -p ch341a_spi -c "W25Q128.V" -w known-good.bin -v
+# Layout file from IFD (once):
+#   ifdtool -f blade.layout stitched.rom
+# Regions: fd 00000000:00000fff, me 00001000:005fffff, bios 00600000:00ffffff
+
+# Preferred first experiment — BIOS region only (preserve on-chip FD/ME):
+# sudo flashrom -p ch341a_spi -c "W25Q128.V" -l blade.layout -i bios \
+#   -w out/blade_stealth_icl-stitched-16m.rom -v
+
+# Full-chip (blank/spare chip or deliberate complete rewrite):
+# sudo flashrom -p ch341a_spi -c "W25Q128.V" \
+#   -w out/blade_stealth_icl-stitched-16m.rom -v
+
+# Restore stock (after external dump SHA matches e6929ca0…):
+# sudo flashrom -p ch341a_spi -c "W25Q128.V" \
+#   -w dumps/blade-rz09-03101e72-spi-16m.bin -v
 ```
 
-See [PREFLASH.md](PREFLASH.md) and [safety](../../docs/process/safety.md) risk tiers. Internal host **writes** to ME/IFD are blocked; plan on **external** programmer for full-chip restore.
+See [PREFLASH.md](PREFLASH.md) and [safety](../../docs/process/safety.md) risk tiers.
 
 ---
 

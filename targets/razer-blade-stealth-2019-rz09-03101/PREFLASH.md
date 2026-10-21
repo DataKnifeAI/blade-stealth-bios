@@ -22,11 +22,11 @@ Related: [FLASH.md](FLASH.md) · [RECOVERY.md](RECOVERY.md) · [COREBOOT.md](COR
 
 ### 1. Successful coreboot build
 
-- [ ] `emberrom/icelake` (or successor) builds a board image for `mb/razer/blade_stealth_icl` (or GTX-specific board name)
-- [ ] Build log archived locally; image size fits **BIOS** region (~10 MiB, IFD `0x600000–0xffffff`)
-- [ ] No flash of intermediate/broken images “just to try”
+- [x] `emberrom/icelake` builds `mb/razer/blade_stealth_icl` (SeaBIOS + FSP + microcode)
+- [x] Image size **16777216**; BIOS region IFD `0x600000–0xffffff` (~10 MiB)
+- [x] No flash of intermediate/broken images “just to try”
 
-**Today:** board skeleton from CL 37565 is on the fork; **build smoke-test still open** (parallel work — do not wait here to finish docs).
+**Today:** stitched ROM built locally — SHA-256 `3debd24dee9a2479b39802d1a789c578cea0b364f9d5ed5ac690438d417ec0f0` (`out/blade_stealth_icl-stitched-16m.rom`). Still **not** flash-ready (gates 3–7).
 
 ### 2. Image stitch plan (FD + ME + CBFS/BIOS)
 
@@ -34,13 +34,13 @@ Documented plan before composing a write image:
 
 | Piece | Source | Notes |
 |-------|--------|--------|
-| Flash Descriptor | Vendor dump FD region | Keep stock IFD layout / locks until deliberately changing |
-| ME | Vendor dump ME region | Keep working ME **13.0.46.1718** for first boots |
-| BIOS / CBFS | coreboot build output | Must land in BIOS region only unless IFD rewrite is intentional |
+| Flash Descriptor | Vendor dump FD region | Stock IFD / locks preserved (`DO_NOT_TOUCH_DESCRIPTOR_REGION`) |
+| ME | Vendor dump ME region | ME **13.0.46.1718** region SHA `90a73b66…` |
+| BIOS / CBFS | coreboot build output | Stitched into BIOS region by ifdtool during `make` |
 
-- [ ] Stitch recipe written (tool + offsets or `ifdtool`/layout file)
-- [ ] Dry-run: stitched image size **16777216**; region hashes recorded locally
-- [ ] Plan prefers **region-limited** external write (BIOS) over full-chip when possible
+- [x] Stitch recipe: defconfig `HAVE_IFD_BIN`/`HAVE_ME_BIN` + `util/scripts/build-razer-blade-stealth-icl.sh` ([COREBOOT.md](COREBOOT.md))
+- [x] Dry-run: stitched size **16777216**; FD/ME SHAs match dump; `ifdtool -t` exit 0
+- [x] Plan prefers **BIOS-region-only** external write first; full-chip OK when FD+ME in image match dump (they do)
 
 IFD map and split tool: [FLASH.md](FLASH.md) · [`tools/ifd_split.py`](../../tools/ifd_split.py) · local `extract/ifd/`.
 
@@ -111,8 +111,8 @@ Fill at the moment of first write attempt:
 
 | Gate | State |
 |------|-------|
-| 1 Build | Open |
-| 2 Stitch plan | Open (regions known; recipe not finalized) |
+| 1 Build | **Done** (stitched 16 MiB locally) |
+| 2 Stitch plan | **Done** (IFD+ME+CBFS; BIOS-region-first) |
 | 3 External dump = internal SHA | Open (internal done) |
 | 4 3.3 V programmer + clip | Open (hardware incoming) |
 | 5 Restore test | Open |

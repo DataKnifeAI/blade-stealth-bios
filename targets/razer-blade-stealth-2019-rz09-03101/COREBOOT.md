@@ -40,25 +40,34 @@ git fetch origin emberrom/icelake && git checkout emberrom/icelake
 
 Do **not** treat this as a flashable port. BIOS-region smoke image builds (below); cold boot / EC / graphics still unproven on hardware.
 
-### Build smoke status (2026-10-21)
+### Build status (2026-10-21)
 
 | Item | Status |
 |------|--------|
-| Defconfig | `configs/config.razer_blade_stealth_icl` (SeaBIOS, no IFD/ME stitch) |
-| Result | **`Built razer/blade_stealth_icl (LY320)`** — `build/coreboot.rom` **16 MiB** (SHA-256 `f423ffb8f26fa7181a1527dbcbe43013236b067706f80be337ad012333fed807`) |
-| Payload | SeaBIOS (board/tree default for x86) |
-| Image note | Built **without** IFD — do **not** flash the full chip; BIOS-region-only write would still need IFD/ME preserved |
-| Commits | `3bf7b8cf72` host GCC 15+; `cf0b0137f2` board 4.19 adaptations (credit CL 37565 / Mimoja) |
+| Defconfig | `configs/config.razer_blade_stealth_icl` — SeaBIOS + **IFD+ME stitch** + microcode `06-7e-05` |
+| Helper | `util/scripts/build-razer-blade-stealth-icl.sh` (checks local blobs; no flashrom) |
+| Result | **`Built razer/blade_stealth_icl (LY320)`** — stitched **16 MiB** ROM |
+| Payload | SeaBIOS |
+| Stitched SHA-256 | `3debd24dee9a2479b39802d1a789c578cea0b364f9d5ed5ac690438d417ec0f0` (local only; not in git) |
+| Earlier smoke (no IFD) | `f423ffb8f26fa7181a1527dbcbe43013236b067706f80be337ad012333fed807` — **do not full-chip flash** |
+| `ifdtool -t` | **exit 0** — IFD region map matches coreboot FMAP |
+| FD / ME vs dump | SHA match vendor extract (`1b51b551…` / `90a73b66…`); BIOS region replaced by CBFS |
+| Descriptor locks | `CONFIG_DO_NOT_TOUCH_DESCRIPTOR_REGION=y` (stock FLMSTR preserved) |
+| Commits | `3bf7b8cf72` host GCC 15+; `cf0b0137f2` board 4.19; stitch/microcode on `emberrom/icelake` |
+
+Local image copies (gitignored): `coreboot/build/coreboot.rom`, `emberrom/out/blade_stealth_icl-stitched-16m.rom`.
 
 ```bash
 cd /home/lee/Projects/coreboot
 git checkout emberrom/icelake
-# Blobs: see FSP / IFD sections below (local only)
-make defconfig KBUILD_DEFCONFIG=configs/config.razer_blade_stealth_icl
-# Host GCC 15+: build crossgcc with C17 wrappers if GMP configure fails (see below)
+# Blobs: see FSP / IFD / microcode sections below (local only)
 export PATH="$PWD/util/crossgcc/xgcc/bin:$PATH"
-make -j"$(nproc)"
+./util/scripts/build-razer-blade-stealth-icl.sh
+# or: make defconfig KBUILD_DEFCONFIG=configs/config.razer_blade_stealth_icl && make -j$(nproc)
 ls -la build/coreboot.rom   # do not flashrom -w
+./util/ifdtool/ifdtool -d build/coreboot.rom
+./util/ifdtool/ifdtool -t build/coreboot.rom   # expect exit 0
+./build/cbfstool build/coreboot.rom print
 ```
 
 ## Ice Lake FSP / microcode (4.19-era)
@@ -85,27 +94,53 @@ git checkout 6f2f17f3d3397cc2f00a644e218980bb33e06f66
 
 Recorded smoke build used `Fsp.fd` SHA-256 `1069d03d4b9fd5a6091b3efd358c3000933fbe4c7e691ffdf0f18cf8ee2c5447`.
 
-**Microcode:** SoC selects `MICROCODE_BLOB_UNDISCLOSED` → defconfig uses `CPU_MICROCODE_CBFS_NONE`. For a flashable image later, switch to external bins from `3rdparty/intel-microcode` (CPU id for i7-1065G7) — still local/gitignored.
+**Microcode (i7-1065G7):** CPUID `0x706e5` → `3rdparty/intel-microcode/intel-ucode/06-7e-05` (SHA-256 `63532fd2322b7d1a3692704b1e1ff667d2aa7ba1060e315a8398658450ed0934`). SoC `Makefile.inc` adds it; `MICROCODE_BLOB_UNDISCLOSED` removed on this fork so `CPU_MICROCODE_CBFS_DEFAULT_BINS` applies. Clone Intel microcode into the submodule path (relative `../intel-microcode.git` does not resolve on DataKnifeAI/github):
+
+```bash
+cd /home/lee/Projects/coreboot
+rm -rf 3rdparty/intel-microcode
+git clone --filter=blob:none \
+  https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files.git \
+  3rdparty/intel-microcode
+# optional pin: git -C 3rdparty/intel-microcode checkout 262f0c97f2fbc3839a59523cc6c6bcf500e2850b
+```
+
+Do **not** commit microcode binaries to the public fork.
 
 **Also init for build:** `3rdparty/vboot` (pinned SHA in tree). Host needs `iasl`/`nasm` (via `make crossgcc-i386`, which also builds them) and a working host GCC.
 
 **Host GCC 15/16 note:** GMP 6.2.1 in this crossgcc fails the “long long reliability” test under C23. Build toolchain with C17 wrappers, e.g. `PATH` entries that run `gcc -std=gnu17` / `g++ -std=gnu++17`, then `make crossgcc-i386 CPUS=$(nproc)`. Do **not** leave those wrappers on `PATH` for the coreboot host-tool build (use plain gcc + the `__nonstring` backport on `emberrom/icelake`).
 
-## IFD / ME (full SPI stitch — not in smoke defconfig)
+## IFD / ME (full SPI stitch — enabled in defconfig)
 
-Extracted locally from the vendor dump (gitignored):
+Extracted locally from the vendor dump (gitignored). Defconfig sets `HAVE_IFD_BIN` + `HAVE_ME_BIN` with default paths under `3rdparty/blobs/mainboard/$(MAINBOARDDIR)/`.
 
-| Blob | Local path |
-|------|------------|
-| Descriptor | `emberrom/vendor/razer-blade-stealth-icl/ifd/descriptor.bin` and `coreboot/3rdparty/blobs/mainboard/razer/blade_stealth_icl/descriptor.bin` |
-| ME | `…/me/me.bin` (same under blobs mainboard path) |
+| Blob | Local path | SHA-256 |
+|------|------------|---------|
+| Descriptor | `emberrom/vendor/…/ifd/descriptor.bin` and `coreboot/3rdparty/blobs/mainboard/razer/blade_stealth_icl/descriptor.bin` | `1b51b551acd037f2c1734e8a4a9cc5cb8a9965166ffdf8df60a3d84471e17137` |
+| ME | `…/me/me.bin` (same under blobs mainboard path) | `90a73b664f18c8e6dd6897232c92bc264bbf56f5f9c516054716e91287f1f8a3` |
 
 ```bash
 make -C util/ifdtool
-./util/ifdtool/ifdtool -x dumps/blade-rz09-03101e72-spi-16m.bin
+./util/ifdtool/ifdtool -x \
+  /home/lee/Projects/emberrom/dumps/blade-rz09-03101e72-spi-16m.bin
+# → flashregion_0_flashdescriptor.bin, flashregion_2_intel_me.bin
+cp flashregion_0_flashdescriptor.bin \
+  3rdparty/blobs/mainboard/razer/blade_stealth_icl/descriptor.bin
+cp flashregion_2_intel_me.bin \
+  3rdparty/blobs/mainboard/razer/blade_stealth_icl/me.bin
 ```
 
-IFD layout on this unit: FD `0–0xfff`, ME `0x1000–0x5fffff`, BIOS `0x600000–0xffffff`; **no EC region** (GbE unused). Board Kconfig still selects `MAINBOARD_USES_IFD_EC_REGION` from CL 37565 — do not enable `HAVE_EC_BIN` until verified. Smoke defconfig leaves `HAVE_IFD_BIN` / `HAVE_ME_BIN` off.
+IFD layout on this unit: FD `0–0xfff`, ME `0x1000–0x5fffff`, BIOS `0x600000–0xffffff`; **no EC region** (GbE unused). Board Kconfig no longer selects `MAINBOARD_USES_IFD_EC_REGION` (CL 37565 inherited that from RVP patterns; this SKU’s IFD has EC unused).
+
+### Flash plan (external programmer only — no writes yet)
+
+| Mode | When | How |
+|------|------|-----|
+| **BIOS-region-only** (preferred first experiment) | FD+ME already known-good on chip | External `flashrom` with IFD layout; program **BIOS** `0x600000–0xffffff` only from stitched image (or extracted BIOS region). Leaves stock FD/ME untouched on the chip. |
+| **Full-chip** | Chip blank / spare / restore of complete image | Write entire 16 MiB stitched ROM. FD+ME in the image match the vendor dump (verified SHA); BIOS is coreboot CBFS. |
+
+Internal host writes cannot touch ME/IFD (`FLOCKDN`). Prefer external CH341A/Pi. **STOP** until [PREFLASH.md](PREFLASH.md) signoff is GO — see also [FLASH.md](FLASH.md).
 
 ## Prior art
 

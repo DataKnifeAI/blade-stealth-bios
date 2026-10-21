@@ -72,13 +72,13 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ### C1. Research baseline
 - [x] Archive / apply [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) PS16 onto 4.19-era tree (see [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)); deeper Mimoja PoC notes still TBD
-- [x] Map Ice Lake FSP / microcode for 4.19-era build (`FSP_USE_REPO` → `3rdparty/fsp/IceLakeFspBinPkg`; microcode none by default) — [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)
+- [x] Map Ice Lake FSP / microcode for 4.19-era build (`FSP_USE_REPO` → `IceLakeFspBinPkg`; microcode `06-7e-05` via `3rdparty/intel-microcode`) — [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)
 - [~] EC: ACPI map started (`EC0`, `LIDS`, `MLBX`); confirm IT8320VG + protocol next
 
 ### C2. Board bring-up (on DataKnifeAI fork first) — aim P0 parity ([GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md))
 - [x] Board skeleton `mb/razer/blade_stealth_icl` from CL 37565 (Mercury White prior art; GTX 03101 still unverified)
 - [x] SeaBIOS smoke **build** on `emberrom/icelake` (`configs/config.razer_blade_stealth_icl` → `build/coreboot.rom` 16 MiB; FSP local; **no flash**)
-- [ ] Stitch IFD+ME into flashable image; add microcode; BIOS-region-only flash plan
+- [x] Stitch IFD+ME + microcode `06-7e-05` into 16 MiB image (`ifdtool -t` OK; SHA in [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md); **no flash**)
 - [ ] Memory init + payload boot on hardware (SeaBIOS first) with external recovery ready
 - [ ] eDP + input + NVMe + USB
 - [ ] ACPI, lid, battery, thermal, **suspend/resume** — blocked on EC understanding
