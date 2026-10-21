@@ -11,7 +11,7 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [x] Create `DataKnifeAI/blade-stealth-bios` repository layout
 - [x] Apache-2.0 LICENSE, README, docs skeleton, TASKS
 - [x] Document SKU RZ09-03101E72 (Ice Lake) and vendor download page
-- [ ] Create GitHub repo under DataKnifeAI + push `main`
+- [x] Create GitHub repo under DataKnifeAI + push `main`
 - [ ] Capture live machine inventory (`dmidecode`, `/sys/class/dmi`, `fwupdmgr`, BIOS version)
 
 ---
