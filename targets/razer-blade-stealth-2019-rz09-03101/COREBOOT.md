@@ -28,6 +28,6 @@ Libreboot does **not** support this board.
 5. EC protocol (longest pole)  
 6. dGPU / Optimus last  
 
-## This repository’s role
+## This target’s role in EmberROM
 
-Out-of-tree notes, scripts, and eventually patches aimed at upstream coreboot. No redistributed vendor ROMs.
+Board-specific notes for the shared [port process](../../docs/process/port.md). Patches should aim at upstream coreboot when ready. No redistributed vendor ROMs.

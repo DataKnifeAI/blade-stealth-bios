@@ -9,6 +9,7 @@ vendor/**
 *.efi
 *.exe
 *.zip
+!docs/assets/**
 
 # Local extracts / analysis
 extract/**

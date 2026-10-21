@@ -23,7 +23,9 @@ Firmware work on a thin laptop without a documented dual-BIOS is **high risk**. 
 2. Write the **verified original dump** back.  
 3. Only then retry partial region writes.
 
-Exact chip footprint, clip orientation, and ISP vs desolder steps are **TBD** after opening this RZ09-03101E72 unit — document with photos under `docs/assets/` (no ROM binaries).
+Exact chip footprint, clip orientation, and ISP vs desolder steps are **TBD** after opening this RZ09-03101E72 unit — document with photos under this target or `docs/assets/` (no ROM binaries).
+
+Shared process: [flash-recover](../../docs/process/flash-recover.md) · [safety](../../docs/process/safety.md).
 
 ## Razer official updater
 

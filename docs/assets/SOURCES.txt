@@ -1,0 +1,1 @@
+emberrom-hero.jpg — generated hero for EmberROM (SPI flash + embers). Project branding asset.

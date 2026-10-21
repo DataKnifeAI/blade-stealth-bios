@@ -1,53 +1,68 @@
-# blade-stealth-bios
+# EmberROM
 
-Open firmware and CachyOS enablement for the **Razer Blade Stealth 13 Late 2019** (Ice Lake), SKU **RZ09-03101E72**.
+![EmberROM — a SPI flash chip in charcoal ash with amber embers tracing open firmware along the pins](docs/assets/emberrom-hero.jpg)
 
-Goal: keep this laptop usable on current CachyOS by (1) documenting and fixing stock-firmware / OS blockers, and (2) advancing a [coreboot](https://www.coreboot.org/) port that can eventually replace the vendor AMI Aptio V BIOS with modern, controllable firmware options.
+**EmberROM** — keep the last glow of a vendor ROM, then forge open firmware from it.
 
-## Hardware
+Process and tooling to port **vendor laptop BIOS/UEFI** to open firmware ([coreboot](https://www.coreboot.org/) and related stacks), while keeping machines usable on modern Linux along the way. Board work lives under `targets/`; shared process docs live under `docs/process/`.
+
+## First target
 
 | Field | Value |
 |-------|--------|
-| Product | Razer Blade Stealth 13" Late 2019 (GTX 1650 Max-Q) |
+| Board | [Razer Blade Stealth 13 Late 2019](targets/razer-blade-stealth-2019-rz09-03101/) |
 | SKU | RZ09-03101E72 |
-| CPU / iGPU | Ice Lake (e.g. i7-1065G7) + Iris Plus |
-| dGPU | NVIDIA GTX 1650 Max-Q |
-| EC | ITE IT8320VG (unsupported in coreboot today) |
-| Vendor firmware | AMI Aptio V (Razer), last public BIOS ~1.05 |
+| CPU | Ice Lake i7-1065G7 |
+| Stock BIOS | AMI Aptio 2.20.1275 · System BIOS **1.05** · EC **1.01** |
+| Goal OS | [CachyOS](https://cachyos.org/) on current kernels |
 
-## Status
+There is **no** flashable open BIOS yet. Stock-firmware enablement and coreboot research run in parallel — see [TASKS.md](TASKS.md).
 
-Bootstrap. Stock-firmware CachyOS track and coreboot research are in [TASKS.md](TASKS.md). There is **no** flashable open BIOS yet.
+## Process
 
-Prior art: abandoned coreboot change [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) (Mimoja) — basic RAM init only; missing ACPI, power, and EC.
+```text
+inventory → dump SPI → extract/analyze → keep usable (stock) → port (coreboot) → flash → recover
+```
 
-## Tracks
+| Stage | Doc |
+|-------|-----|
+| Safety | [docs/process/safety.md](docs/process/safety.md) |
+| Inventory | [docs/process/inventory.md](docs/process/inventory.md) |
+| Dump | [docs/process/dump.md](docs/process/dump.md) |
+| Extract | [docs/process/extract.md](docs/process/extract.md) |
+| Stock enablement | [docs/process/stock-enablement.md](docs/process/stock-enablement.md) |
+| Port | [docs/process/port.md](docs/process/port.md) |
+| Flash & recover | [docs/process/flash-recover.md](docs/process/flash-recover.md) |
+| Add a target | [docs/process/add-target.md](docs/process/add-target.md) |
 
-1. **Stock firmware + CachyOS** — boot, NVRAM, Secure Boot, suspend, GPU, fwupd hygiene so the machine stays usable *now*.
-2. **Vendor asset archive** — official BIOS/ME packages for analysis (not committed; see [docs/VENDOR_ASSETS.md](docs/VENDOR_ASSETS.md)).
-3. **coreboot port** — revive/extend Ice Lake board support, EC research, recovery plan ([docs/COREBOOT.md](docs/COREBOOT.md)).
+## Layout
 
-## Docs
+```text
+emberrom/
+  docs/process/     # board-agnostic workflow
+  docs/assets/      # heroes, photos (no ROM binaries)
+  targets/<board>/  # per-laptop notes, status, vendor links
+  tools/            # shared helpers (later)
+  vendor/           # local proprietary updaters (gitignored)
+  dumps/            # local SPI dumps (gitignored)
+```
 
-| Doc | Contents |
-|-----|----------|
-| [docs/HARDWARE.md](docs/HARDWARE.md) | SKU inventory, chips, flash layout notes |
-| [docs/VENDOR_ASSETS.md](docs/VENDOR_ASSETS.md) | What to download from Razer (and what not to) |
-| [docs/STOCK_FIRMWARE.md](docs/STOCK_FIRMWARE.md) | CachyOS / AMI BIOS workarounds |
-| [docs/COREBOOT.md](docs/COREBOOT.md) | Port plan, blobs, EC, recovery |
-| [docs/RECOVERY.md](docs/RECOVERY.md) | Brick recovery / external programmer |
-| [TASKS.md](TASKS.md) | Phased work checklist |
+## Principles
 
-## Safety
+- **Freedom-respecting** — prefer open firmware and user-controlled boot paths when the silicon allows.
+- **Recoverable** — no experimental write without a verified dump and an external flash plan.
+- **No blob redistribution** — document hashes and download steps; keep ME/BIOS/EC images local.
+- **Maintainable** — one shared process; targets carry only board-specific truth.
 
-Flashing firmware can brick the laptop. Internal `flashrom` is often blocked by descriptor locks; plan for an **external SPI programmer** and a verified dump of the original ROM before any write. See [docs/RECOVERY.md](docs/RECOVERY.md).
+## Related prior art
 
-Proprietary Razer/Intel blobs stay under local `vendor/` / `dumps/` (gitignored). Do not publish full ME/BIOS images.
+- [coreboot](https://www.coreboot.org/) / [Libreboot](https://libreboot.org/) (supported boards only)
+- Abandoned Ice Lake Stealth work: [coreboot CL 37565](https://review.coreboot.org/c/coreboot/+/37565)
 
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE).
 
-Any coreboot board patches contributed upstream remain under coreboot’s license (GPL-2.0). Vendor firmware remains proprietary and is not redistributed from this repository.
+coreboot patches contributed upstream remain under coreboot’s license (GPL-2.0). Vendor firmware stays proprietary and is not redistributed from this repository.
 
 Maintained by [DataKnifeAI](https://github.com/DataKnifeAI).

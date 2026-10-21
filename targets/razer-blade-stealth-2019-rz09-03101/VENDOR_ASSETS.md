@@ -10,7 +10,7 @@ Official download hub for this board:
 
 For an open-BIOS / coreboot effort you need **firmware images and flash layout**, not Intel/NVIDIA Windows installers. The most important artifact is still a **full SPI dump from your own laptop**; Razer’s updaters are secondary (analysis, comparison, sometimes extractable regions).
 
-## Need (keep local under `vendor/` — gitignored)
+## Need (keep local under repo-root `vendor/` — gitignored)
 
 | Asset | Why | Source on Answer 4566 |
 |-------|-----|------------------------|
@@ -39,7 +39,7 @@ Linux (CachyOS) uses in-kernel or distro packages for those. They do not help bu
 
 ## Handling rules
 
-1. Download into `vendor/` (gitignored). Record SHA-256 here when collected.
+1. Download into repo-root `vendor/` (gitignored). Record SHA-256 here when collected.
 2. **Never commit** full BIOS/ME/EC images or updater EXEs to this repo.
 3. Prefer documenting **extraction steps + hashes** so others can fetch from Razer.
 4. Before applying any official updater, back up NVRAM/boot state — Blade Stealth models have hit **NVRAM Volume Full** after DBX/fwupd updates.

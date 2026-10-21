@@ -1,6 +1,6 @@
 # Implementation tasks
 
-Ordered work plan. Mirror as GitHub Issues when the remote exists; keep this file updated as tasks complete.
+Ordered work plan for **EmberROM**. First board target: [razer-blade-stealth-2019-rz09-03101](targets/razer-blade-stealth-2019-rz09-03101/).
 
 Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
@@ -8,11 +8,11 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ## Phase 0 — Bootstrap
 
-- [x] Create `DataKnifeAI/blade-stealth-bios` repository layout
-- [x] Apache-2.0 LICENSE, README, docs skeleton, TASKS
-- [x] Document SKU RZ09-03101E72 (Ice Lake) and vendor download page
-- [x] Create GitHub repo under DataKnifeAI + push `main`
-- [ ] Capture live machine inventory (`dmidecode`, `/sys/class/dmi`, `fwupdmgr`, BIOS version)
+- [x] Create project (formerly `blade-stealth-bios`)
+- [x] Rename to **emberrom** — general process + `targets/`
+- [x] Hero graphic + README
+- [x] Document SKU RZ09-03101E72 Aptio Main inventory (BIOS 1.05, EC 1.01, MCU 1.00.06.00, i7-1065G7)
+- [ ] Capture OS-side inventory (`dmidecode`, `fwupdmgr`, `lspci`, ME version)
 
 ---
 
@@ -20,12 +20,13 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ### S1. Reproduce CachyOS failure modes
 - [ ] Document exact failure: ISO boot, install, post-install (NVRAM full, Secure Boot, GPU, suspend, …)
-- [ ] Record current BIOS / ME / EC versions and UEFI settings that matter
+- [x] Record BIOS / EC / MCU from Aptio Main (ME + Advanced/Security/Boot settings still TBD)
+- [ ] Record ME version and UEFI options that affect CachyOS (Secure Boot, CSM, TB)
 
 ### S2. NVRAM / fwupd hygiene
 - [ ] Document DBX / MokList “Volume Full” risk on Blade Stealth
 - [ ] Recommend fwupd denylist / avoid patterns for this SKU
-- [ ] CMOS / NVRAM recovery steps in [docs/RECOVERY.md](docs/RECOVERY.md)
+- [ ] Expand CMOS / NVRAM recovery in target [RECOVERY.md](targets/razer-blade-stealth-2019-rz09-03101/RECOVERY.md)
 
 ### S3. Boot and runtime enablement
 - [ ] Installer boot notes (Secure Boot, CSM off, USB-C vs USB-A)
@@ -40,7 +41,7 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 ### V1. Collect official packages
 - [ ] Download BIOS updater (LY320 / v1.05) from Razer RZ09-03101 page
 - [ ] Download matching Intel ME firmware updaters (note ME major version on device)
-- [ ] Store under `vendor/` (gitignored); record hashes in `docs/VENDOR_ASSETS.md`
+- [ ] Store under `vendor/` (gitignored); record hashes in target `VENDOR_ASSETS.md`
 
 ### V2. Full SPI dump (authoritative)
 - [ ] Determine if internal flashrom read works (descriptor / HAP / HWP)
@@ -54,7 +55,7 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 3 — coreboot port
+## Phase 3 — coreboot port (first target)
 
 ### C1. Research baseline
 - [ ] Archive notes from [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) and Mimoja PoC
@@ -72,8 +73,9 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 4 — Upstream / packaging
+## Phase 4 — EmberROM tooling / upstream
 
+- [ ] Shared helpers under `tools/` (hash log, dump verify, IFD summary)
 - [ ] Propose coreboot Gerrit change when cold boot + basics work
-- [ ] Optional: build scripts / docs only in this repo; no proprietary redistributes
-- [ ] Link from [dataknife.ai](https://dataknife.ai) catalog when public
+- [ ] Link from [dataknife.ai](https://dataknife.ai) catalog when ready
+- [ ] Second laptop target (TBD) using [add-target](docs/process/add-target.md)
