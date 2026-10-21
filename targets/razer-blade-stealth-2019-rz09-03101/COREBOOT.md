@@ -28,6 +28,10 @@ Libreboot does **not** support this board.
 5. EC protocol (longest pole)  
 6. dGPU / Optimus last  
 
+## Success bar (owner)
+
+See [GOALS.md](GOALS.md). Target is **feature parity with a proper coreboot laptop port** (P0 daily-driver hardware), not a one-shot payload PoC. GTX Optimus + Thunderbolt are P1 after suspend/EC/display work.
+
 ## This target’s role in EmberROM
 
 Board-specific notes for the shared [port process](../../docs/process/port.md). Patches should aim at upstream coreboot when ready. No redistributed vendor ROMs.

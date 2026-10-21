@@ -15,11 +15,13 @@ Process and tooling to port **vendor laptop BIOS/UEFI** to open firmware ([coreb
 | CPU | Ice Lake i7-1065G7 |
 | Stock BIOS | AMI Aptio 2.20.1275 · System BIOS **1.05** · EC **1.01** · ME **13.0.46.1718** |
 | SPI | Winbond W25Q128.V 16 MiB — [FLASH.md](targets/razer-blade-stealth-2019-rz09-03101/FLASH.md) |
-| Goal OS | [CachyOS](https://cachyos.org/) on current kernels |
+| Goal OS | [CachyOS](https://cachyos.org/) (Ubuntu on unit is temporary) |
+| Known stock bug | **Suspend / sleep broken** |
+| Port bar | coreboot **feature parity** (P0 daily driver) — [GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md) |
 
 Razer hub: [Answer 4566](https://mysupport.razer.com/app/answers/detail/a_id/4566). Live capture: [INVENTORY.md](targets/razer-blade-stealth-2019-rz09-03101/INVENTORY.md).
 
-There is **no** flashable open BIOS yet. Stock-firmware enablement and coreboot research run in parallel — see [TASKS.md](TASKS.md).
+There is **no** flashable open BIOS yet. Stock suspend workarounds and coreboot port run in parallel — see [TASKS.md](TASKS.md).
 
 ## Process
 

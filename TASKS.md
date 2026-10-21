@@ -18,8 +18,10 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ## Phase 1 — Stock firmware + CachyOS (keep it usable)
 
-### S1. Reproduce CachyOS failure modes
-- [ ] Document exact failure: ISO boot, install, post-install (NVRAM full, Secure Boot, GPU, suspend, …)
+### S1. Reproduce failure modes / goals
+- [x] Owner goals: CachyOS end-state; Ubuntu temporary; buy external programmer; coreboot **feature parity** (P0) — [GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md)
+- [x] Confirmed stock issue: **sleep / suspend broken**
+- [ ] Characterize suspend (no wake vs re-suspend loop vs blank; s2idle/deep; lid quirk; GPU path) on Ubuntu, then CachyOS
 - [x] Record BIOS / EC / MCU from Aptio Main (ME + Advanced/Security/Boot settings still TBD)
 - [x] Record ME version (**13.0.46.1718**) and Secure Boot (**off** on this unit); CSM / TB setup options still TBD from Aptio
 
@@ -29,8 +31,8 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [ ] Expand CMOS / NVRAM recovery in target [RECOVERY.md](targets/razer-blade-stealth-2019-rz09-03101/RECOVERY.md)
 
 ### S3. Boot and runtime enablement
-- [ ] Installer boot notes (Secure Boot, CSM off, USB-C vs USB-A)
-- [ ] Kernel cmdline / quirks still needed on modern CachyOS kernels
+- [ ] CachyOS install notes (Secure Boot off, CSM off, USB boot)
+- [ ] Suspend fix or workaround on stock firmware (see [STOCK_FIRMWARE.md](targets/razer-blade-stealth-2019-rz09-03101/STOCK_FIRMWARE.md))
 - [ ] iGPU + GTX 1650 Max-Q hybrid graphics notes for CachyOS
 - [ ] Thunderbolt / USB-C power / docking notes
 
@@ -63,14 +65,17 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [ ] Map Ice Lake FSP / microcode / libgfxinit requirements
 - [ ] Document IT8320VG EC: ACPI methods, battery, keyboard, USB-PD
 
-### C2. Board bring-up (out of tree first)
+### C2. Board bring-up (out of tree first) — aim P0 parity ([GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md))
 - [ ] Board skeleton `mb/razer/blade_stealth_icl` (or revive abandoned patch)
 - [ ] Memory init + payload boot (SeaBIOS / edk2 / LinuxBoot)
-- [ ] ACPI, lid, battery, thermal — blocked on EC understanding
+- [ ] eDP + input + NVMe + USB
+- [ ] ACPI, lid, battery, thermal, **suspend/resume** — blocked on EC understanding
+- [ ] P1 later: Optimus dGPU, Thunderbolt / USB-C PD
 
 ### C3. Flash and recovery
-- [ ] Dual-BIOS / external flash workflow documented and tested on spare chip if possible
-- [ ] Known-good vendor ROM restore procedure
+- [~] Owner purchasing external 3.3 V SPI programmer + SOIC-8 clip
+- [ ] External dump matches internal SHA; clip photos documented
+- [ ] Known-good vendor ROM restore procedure tested via external programmer
 
 ---
 
