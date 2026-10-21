@@ -96,7 +96,7 @@ Razer PCI subsystem ID seen on onboard devices: **`1a58:1001`**.
 Full-chip image obtained locally via Linux MTD and `flashrom` (not redistributed here).
 
 ```text
-sha256: e729ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
+sha256: e6929ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
 size:   16777216
 ```
 

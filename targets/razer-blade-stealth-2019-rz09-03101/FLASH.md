@@ -35,7 +35,7 @@ SPI configuration lockdown (`FLOCKDN=1`). fwupd reports Internal SPI “firmware
 Captured 2026-10-21 on the reference unit. Image itself is **local only**.
 
 ```text
-sha256: e729ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
+sha256: e6929ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
 size:   16777216
 ```
 
@@ -105,7 +105,7 @@ sudo flashrom -p ch341a_spi -c "W25Q128.V"   # probe
 sudo flashrom -p ch341a_spi -c "W25Q128.V" -r ext-1.bin
 sudo flashrom -p ch341a_spi -c "W25Q128.V" -r ext-2.bin
 sha256sum ext-1.bin ext-2.bin
-# compare to e729ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
+# compare to e6929ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
 ```
 
 ### Dump (Raspberry Pi GPIO SPI)
