@@ -23,7 +23,7 @@ Suspend workarounds to try on stock (document results in [STOCK_FIRMWARE.md](STO
 | Item | Decision |
 |------|----------|
 | External SPI programmer | **Will buy** (3.3 V-capable, SOIC-8 clip for W25Q128.V) |
-| Writes | Only after external dump matches internal SHA-256 `e6929ca0…` (see [FLASH.md](FLASH.md)) |
+| Writes | Only after [PREFLASH.md](PREFLASH.md) go/no-go (incl. external dump SHA `e6929ca0…`) |
 
 ## Open-firmware success bar
 

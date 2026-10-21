@@ -5,9 +5,10 @@ First EmberROM board target — Ice Lake Blade Stealth, SKU **RZ09-03101E72** (b
 | Doc | Contents |
 |-----|----------|
 | [GOALS.md](GOALS.md) | OS target, suspend bug, programmer, coreboot parity bar |
-| [ANALYSIS.md](ANALYSIS.md) | Suspend labs, IFD split, ACPI/EC findings |
+| [ANALYSIS.md](ANALYSIS.md) | Suspend labs, IFD split, VBT/GOP offsets, ACPI/EC findings |
 | [INVENTORY.md](INVENTORY.md) | Public Razer / live capture (SKU, firmware, SPI hash — no serials/blobs) |
 | [FLASH.md](FLASH.md) | SPI chip, IFD map, dump/write commands, programmer notes |
+| [PREFLASH.md](PREFLASH.md) | **Ordered go/no-go gates before any SPI write** |
 | [RECOVERY.md](RECOVERY.md) | Soft/hard recovery |
 | [HARDWARE.md](HARDWARE.md) | Aptio inventory, silicon notes |
 | [VENDOR_ASSETS.md](VENDOR_ASSETS.md) | What to download from Razer |

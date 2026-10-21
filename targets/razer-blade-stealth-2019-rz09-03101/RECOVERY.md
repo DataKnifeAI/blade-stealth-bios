@@ -3,6 +3,7 @@
 Firmware work on a thin laptop without dual-BIOS is **high risk**. Assume an external SPI programmer before the first experimental write.
 
 Dump layout, flashrom commands, and programmer notes: **[FLASH.md](FLASH.md)**.  
+Pre-flash go/no-go gates: **[PREFLASH.md](PREFLASH.md)**.  
 Live Razer / silicon facts: **[INVENTORY.md](INVENTORY.md)**.
 
 Shared process: [flash-recover](../../docs/process/flash-recover.md) · [safety](../../docs/process/safety.md).
@@ -10,6 +11,8 @@ Shared process: [flash-recover](../../docs/process/flash-recover.md) · [safety]
 ---
 
 ## Before any flash write
+
+Complete **[PREFLASH.md](PREFLASH.md)** (including restore test + GTX vs Mercury White review). Minimum:
 
 1. Dump the full ROM **twice**; hashes must match.  
 2. Store dumps **offline** (not only on the laptop under test).  

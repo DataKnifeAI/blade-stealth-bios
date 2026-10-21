@@ -56,7 +56,8 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [x] Split IFD regions (FD / ME / BIOS) via `tools/ifd_split.py` — **no IFD EC region**
 - [x] Capture ACPI tables from running system (`acpidump` — local only)
 - [x] First-pass ACPI/EC notes (lid, `_WAK`/`RTEC`/`VRTC`, MLBX 0x300) — [ANALYSIS.md](targets/razer-blade-stealth-2019-rz09-03101/ANALYSIS.md)
-- [ ] UEFI volume / VBT map inside BIOS region
+- [x] Locate VBT in BIOS region (`$VBT ICELAKE` @ SPI `0xe2c484`; hashes in ANALYSIS) — full DXE/GOP FFS names still need UEFITool
+- [~] Optimus ACPI: SSDT11 `HgRpSsdt` + SSDT13 `Opt1Tabl` (`HGON`/`HGOF`/`NGC6`) noted; pin/rail map TBD
 - [ ] Compare updater capsule contents vs SPI dump
 
 ---
@@ -83,9 +84,11 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [ ] P1 later: Optimus dGPU, Thunderbolt / USB-C PD
 
 ### C3. Flash and recovery
+- [x] Pre-flash go/no-go checklist — [PREFLASH.md](targets/razer-blade-stealth-2019-rz09-03101/PREFLASH.md) (build / stitch / SHA / 3.3 V / restore / GTX deltas / signoff)
 - [~] Owner purchasing external 3.3 V SPI programmer + SOIC-8 clip
-- [ ] External dump matches internal SHA; clip photos documented
+- [ ] External dump matches internal SHA `e6929ca0…`; clip photos documented
 - [ ] Known-good vendor ROM restore procedure tested via external programmer
+- [ ] **STOP before write** until PREFLASH signoff is GO — no `flashrom -w` yet
 
 ---
 

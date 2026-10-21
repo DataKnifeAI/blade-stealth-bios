@@ -2,6 +2,8 @@
 
 Board-specific flash layout, dump methods, and programmer notes. Soft/hard recovery procedures: [RECOVERY.md](RECOVERY.md). Public identity / versions: [INVENTORY.md](INVENTORY.md).
 
+**Before any write:** complete the ordered gates in **[PREFLASH.md](PREFLASH.md)** (build, stitch plan, external SHA match, 3.3 V clip, restore test, GTX vs Mercury White deltas, go/no-go). **STOP** — do not run `flashrom -w` until that signoff is GO.
+
 **Never commit** full ROM images, ME regions, or updater binaries. Keep local under repo-root `dumps/` (gitignored).
 
 ---
@@ -119,11 +121,11 @@ sudo flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 -r ext-1.bin
 
 ```bash
 # Prefer region-limited layout once IFD tools are set up.
-# Full-chip example — DO NOT run until restore dump is verified offline:
+# Full-chip example — DO NOT run until PREFLASH.md signoff is GO:
 # sudo flashrom -p ch341a_spi -c "W25Q128.V" -w known-good.bin -v
 ```
 
-See [safety](../../docs/process/safety.md) risk tiers. Internal host **writes** to ME/IFD are blocked; plan on **external** programmer for full-chip restore.
+See [PREFLASH.md](PREFLASH.md) and [safety](../../docs/process/safety.md) risk tiers. Internal host **writes** to ME/IFD are blocked; plan on **external** programmer for full-chip restore.
 
 ---
 

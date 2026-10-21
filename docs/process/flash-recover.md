@@ -18,5 +18,6 @@ Document board-specific clip photos and pinouts under `targets/<board>/` or `doc
 
 Board-specific IFD map, internal/external dump commands, and recovery:  
 [`targets/razer-blade-stealth-2019-rz09-03101/FLASH.md`](../../targets/razer-blade-stealth-2019-rz09-03101/FLASH.md) ·  
+[`PREFLASH.md`](../../targets/razer-blade-stealth-2019-rz09-03101/PREFLASH.md) (go/no-go before write) ·  
 [`RECOVERY.md`](../../targets/razer-blade-stealth-2019-rz09-03101/RECOVERY.md) ·  
 [`INVENTORY.md`](../../targets/razer-blade-stealth-2019-rz09-03101/INVENTORY.md).

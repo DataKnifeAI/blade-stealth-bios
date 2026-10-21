@@ -80,7 +80,70 @@ Local split output (gitignored): `extract/ifd/`.
 
 ---
 
-## 3. ACPI / EC (from `extract/acpi/DSDT.dsl`)
+## 3. UEFI volumes / VBT (BIOS region)
+
+Tools available on analysis host: `python3`, `strings` (no `binwalk` / UEFIExtract installed).  
+Source region: `extract/ifd/01_bios_00600000-00ffffff.bin`  
+BIOS region SHA-256: `559d00f2c1359b88cce51aeb252f35b7e470ccfdeaf4c2f3073450131505b57c`  
+SPI base for BIOS: **`0x00600000`**.
+
+### Firmware volumes (`_FVH`)
+
+Ten length-aligned volumes (FFS2 `8c8ce578-8a3d-4f1c-9935-896185c32dd3`). Hashes truncated in table; full digests recorded locally if needed — **no volume binaries in git**.
+
+| # | SPI offset | BIOS offset | Size | SHA-256 (prefix) |
+|---|------------|-------------|------|------------------|
+| 0 | `0x00600000` | `0x00000000` | `0x30000` | `f06d104fada30d6d…` |
+| 1 | `0x00670000` | `0x00070000` | `0x4a0000` | `325e8334fc33aaf6…` |
+| 2 | `0x00b10000` | `0x00510000` | `0x200000` | `82d56121392102e1…` |
+| 3 | `0x00d10000` | `0x00710000` | `0xd0000` | `31a5c7c56e5622a2…` |
+| 4 | `0x00de0000` | `0x007e0000` | `0xa0000` | `4f5bf9404c9f2f91…` |
+| 5 | `0x00e80000` | `0x00880000` | `0x8d000` | `deeea1857505b143…` |
+| 6 | `0x00e80070` | `0x00880070` | `0x5a000` | `c5349ae2bdec6444…` (nested) |
+| 7 | `0x00f0d000` | `0x0090d000` | `0x6000` | `7983aa5c1caffe34…` |
+| 8 | `0x00f13000` | `0x00913000` | `0x6d000` | `47874a7d04d0c157…` |
+| 9 | `0x00f80000` | `0x00980000` | `0x80000` | `bd86b743431762d5…` |
+
+FV **#4** (`0x00de0000`, 640 KiB) holds the VBT FREEFORM file among ~33 FFS entries (mostly PEIMs).
+
+### Intel VBT (`$VBT ICELAKE`)
+
+| Field | Value |
+|-------|--------|
+| Signature | `$VBT ICELAKE` (20-byte padded) |
+| SPI offset | **`0x00e2c484`** |
+| BIOS-region offset | `0x0082c484` |
+| VBT version | 100 |
+| Header size | 48 |
+| **VBT size** | **6380** bytes (`0x18ec`) |
+| Checksum byte | `0xfd` |
+| BDB | `BIOS_DATA_BLOCK` @ +48; BDB version **230**; `bdb_size` 6331 |
+| **VBT SHA-256** | `e64e219bc94ff587e7a45b5512d7a8f836f66bc266bd3df663c7d83fbf47d14d` |
+
+Containing FFS (type **FREEFORM** `0x02`):
+
+| Field | Value |
+|-------|--------|
+| GUID | `dcb132e7-27d2-40ff-9c3f-9f280b3d10f5` |
+| SPI / BIOS | `0x00e2c468` / `0x0082c468` |
+| FFS size | `0x1a1c` (6684) |
+| **FFS SHA-256** | `454ac7c0d619134604ece2b7c1000bb2960c3faa3c9655925c4194b09bb42042` |
+| Parent FV SHA-256 | `4f5bf9404c9f2f91f4c44632835a91e1bb58835a43951d5b8a1a523faff0a1b0` |
+
+Same GUID also appears at SPI `0x00f9e3e4` inside FV #9 — looks like a **variable/default store reference** (`BBRR****` UTF-16), not a second VBT payload.
+
+### GOP-related notes
+
+- Aptio Main reports **IGFX GOP Version 14.0.1039** (runtime inventory) — that version string was **not** found as ASCII in the BIOS region.
+- No discrete NVIDIA VBIOS / `ATOMBIOS` / `NVIDIA` markers in the SPI BIOS region (expected for Optimus: dGPU ROM is on the GPU, not the board flash).
+- A bare `PCIR` hit at `0x00f1fa71` is a **false positive** inside code (not a PCI option ROM header).
+- Without UEFIExtract/binwalk, GOP DXE module names were not fully enumerated; next pass: UEFITool on the BIOS region (local only) to name the Intel GOP driver FFS.
+
+coreboot bring-up should extract/reuse this VBT (or regenerate via inteltool + panel EDID) for eDP — do **not** borrow a Mercury White VBT blindly.
+
+---
+
+## 4. ACPI / EC (from `extract/acpi/DSDT.dsl`)
 
 | Item | Finding |
 |------|---------|
@@ -102,9 +165,24 @@ Local split output (gitignored): `extract/ifd/`.
 
 ---
 
-## 4. Open analysis TODOs
+### Optimus / dGPU ACPI (GTX SKU)
 
-- [ ] UEFI volume map inside BIOS region (VBT, DXEs) — needs UEFITool/UEFIExtract  
+Stock tables under `extract/acpi/` (local):
+
+| Table | OEM / creator | Relevance |
+|-------|---------------|-----------|
+| SSDT11 | `HgRpSsdt` / HgRef | `HGON` / `HGOF` |
+| SSDT13 | `Opt1Tabl` / OptRf1 | Optimus: `RP09.PEGP`, `NGC6`, `_ON` / related |
+
+DSDT also declares `PEG0`–`PEG3` / `GFX0`. Mercury White (CL 37565 prior art) should **not** be assumed to share these power paths — verify GPIOs/rails before enabling dGPU in coreboot ([PREFLASH.md](PREFLASH.md) §6).
+
+---
+
+## 5. Open analysis TODOs
+
+- [x] Locate VBT in BIOS region (offsets + hashes above)  
+- [ ] UEFITool/UEFIExtract full DXE map (name Intel GOP driver FFS)  
+- [ ] Decompile SSDT11/13; map HGON/HGOF pins vs CL 37565 `gpio.h`  
 - [ ] ME HAP / manufacturing mode bits from FD/ME (soft-disable research later)  
 - [ ] Trace `MLBX` 0x300 mailbox vs battery/PD  
 - [ ] Compare LY320 BIOS 1.05 updater capsule to SPI BIOS region (when downloaded)  

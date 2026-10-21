@@ -48,7 +48,7 @@ Do **not** treat this as a flashable port. Next work is FSP/blob wiring, `make m
 | Mimoja PoC / LinuxBoot notes | Experimental (2020) | Cold boot unreliable; EC must stay powered |
 | Blade Stealth 2016 H2U (Kaby Lake) | Earlier merged reference | Different SoC + ITE8528E Super I/O |
 
-CL 37565 claimed for Mercury White ICL: i7-1065G7, IT8320VG EC, LPDDR4, Titan Ridge, Realtek audio, Type-C switches. **GTX SKU (03101)** shares the Ice Lake platform class but needs its own verification (dGPU power rails, mux, ACPI).
+CL 37565 claimed for Mercury White ICL: i7-1065G7, IT8320VG EC, LPDDR4, Titan Ridge, Realtek audio, Type-C switches. **GTX SKU (03101)** shares the Ice Lake platform class but needs its own verification (dGPU power rails, mux, ACPI) — checklist in [PREFLASH.md](PREFLASH.md) §6. Stock VBT located in SPI dump ([ANALYSIS.md](ANALYSIS.md) §3).
 
 Libreboot does **not** support this board.
 
