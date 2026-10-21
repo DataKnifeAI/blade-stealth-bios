@@ -18,7 +18,7 @@ Shared process: [flash-recover](../../docs/process/flash-recover.md) · [safety]
 5. Prefer matching the reference internal dump hash when possible:
 
 ```text
-sha256: e729ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
+sha256: e6929ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1
 ```
 
 ---

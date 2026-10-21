@@ -59,7 +59,7 @@ Windows-only packages on Answer 4566 (skip for EmberROM):
 
 ```text
 # date       | sha256 | filename | notes
-# 2026-10-21 | e729ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1 | (local SPI dump) | internal MTD/flashrom — see FLASH.md; binary not in git
+# 2026-10-21 | e6929ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1 | (local SPI dump) | internal MTD/flashrom — see FLASH.md; binary not in git
 #            | (pending) | LY320-BIOSv0105* | download from rzr.to/H1kYs
 ```
 
