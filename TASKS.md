@@ -12,7 +12,7 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [x] Rename to **emberrom** — general process + `targets/`
 - [x] Hero graphic + README
 - [x] Document SKU RZ09-03101E72 Aptio Main inventory (BIOS 1.05, EC 1.01, MCU 1.00.06.00, i7-1065G7)
-- [ ] Capture OS-side inventory (`dmidecode`, `fwupdmgr`, `lspci`, ME version)
+- [x] Capture OS-side inventory (`dmidecode`, `fwupdmgr`, `lspci`, ME 13.0.46.1718, W25Q128.V, GTX 1650)
 
 ---
 
@@ -21,7 +21,7 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 ### S1. Reproduce CachyOS failure modes
 - [ ] Document exact failure: ISO boot, install, post-install (NVRAM full, Secure Boot, GPU, suspend, …)
 - [x] Record BIOS / EC / MCU from Aptio Main (ME + Advanced/Security/Boot settings still TBD)
-- [ ] Record ME version and UEFI options that affect CachyOS (Secure Boot, CSM, TB)
+- [x] Record ME version (**13.0.46.1718**) and Secure Boot (**off** on this unit); CSM / TB setup options still TBD from Aptio
 
 ### S2. NVRAM / fwupd hygiene
 - [ ] Document DBX / MokList “Volume Full” risk on Blade Stealth
@@ -44,13 +44,14 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [ ] Store under `vendor/` (gitignored); record hashes in target `VENDOR_ASSETS.md`
 
 ### V2. Full SPI dump (authoritative)
-- [ ] Determine if internal flashrom read works (descriptor / HAP / HWP)
-- [ ] If locked: external programmer procedure + clip pinout notes
-- [ ] Dump full ROM; verify checksums; archive offline (never commit)
+- [x] Probe internal flashrom — W25Q128.V 16 MiB; FLOCKDN; ME/IFD host-RO; BIOS region RW
+- [x] Internal full-chip dump (MTD + flashrom); SHA-256 recorded in target [FLASH.md](targets/razer-blade-stealth-2019-rz09-03101/FLASH.md) / [INVENTORY.md](targets/razer-blade-stealth-2019-rz09-03101/INVENTORY.md)
+- [~] External CH341A / Pi dump to cross-check; document clip photos after chassis open
+- [ ] Archive verified dump offline (never commit)
 
 ### V3. Extract / analyze
 - [ ] Split IFD regions (BIOS / ME / EC / flash descriptor)
-- [ ] Extract VBT, ACPI tables from running system (`acpidump`)
+- [x] Capture ACPI tables from running system (`acpidump` — local only)
 - [ ] Compare updater capsule contents vs SPI dump
 
 ---

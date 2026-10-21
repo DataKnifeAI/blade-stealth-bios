@@ -1,56 +1,69 @@
-# Vendor assets — what to get from Razer
+# Vendor assets — RZ09-03101 / LY320
 
-Official download hub for this board:
+Official download hub:
 
 **[Razer Blade Stealth 13" GTX1650 (2019) \| RZ09-03101](https://mysupport.razer.com/app/answers/detail/a_id/4566)**
 
+Live unit facts (versions, SPI hash): [INVENTORY.md](INVENTORY.md) · dump/recovery: [FLASH.md](FLASH.md).
+
 ## Short answer
 
-**Yes — pull the firmware packages, not the Windows device drivers.**
+**Pull firmware packages, not Windows device drivers.**
 
-For an open-BIOS / coreboot effort you need **firmware images and flash layout**, not Intel/NVIDIA Windows installers. The most important artifact is still a **full SPI dump from your own laptop**; Razer’s updaters are secondary (analysis, comparison, sometimes extractable regions).
+The authoritative image is still a **full SPI dump from this laptop** ([FLASH.md](FLASH.md)). Razer updaters are for analysis, comparison, and stock restore when the machine still boots.
 
-## Need (keep local under repo-root `vendor/` — gitignored)
+## Download links (public)
 
-| Asset | Why | Source on Answer 4566 |
-|-------|-----|------------------------|
-| **BIOS updater** (`LY320-BIOSv0105` / guide + package) | AMI capsule / PEI/DXE modules, VBT clues, version baseline | “Razer Blade Stealth 13” (2019) BIOS Update” ~v1.05 |
-| **Intel ME firmware updater** matching the ME major on the device | ME region reference; HAP / soft-disable research | INTEL-SA-00391 / SA-00459 packages (ME **v12** vs **v14** — pick what matches `me_status` / fwupd) |
-| **EC firmware** (if published separately) | Keyboard, battery, USB-PD, power sequencing — hard blocker for coreboot | Often bundled inside BIOS; check updater contents. Separate EC packages exist for *other* Stealth years — verify for 03101 |
+| Asset | Version / notes | Link |
+|-------|-----------------|------|
+| **BIOS updater** | LY320 · **v1.05** (`BIOSv0105`) — matches this unit | [https://rzr.to/H1kYs](https://rzr.to/H1kYs) |
+| BIOS update guide (PDF) | Linked from Answer 4566 | Via hub above |
+| ME updater INTEL-SA-00391 | Listed as **ME v14** (`14.0.48.1605`) | [https://rzr.to/Wz84HQ](https://rzr.to/Wz84HQ) |
+| ME updater INTEL-SA-00459 | Listed as **ME v12** (`12.0.81.1753`) | [https://rzr.to/tfjQCo](https://rzr.to/tfjQCo) |
 
-Also capture (not from Razer):
+**ME caution:** this unit runs **ME 13.0.46.1718**. Answer 4566 currently lists **v12 / v14** only — fine to download for archaeology; **do not flash** an ME updater that does not match major **13** without a verified SPI backup and a deliberate plan.
+
+## Need (local `vendor/` — gitignored)
 
 | Asset | Why |
 |-------|-----|
-| **Full SPI ROM dump** from RZ09-03101E72 | Authoritative IFD + ME + BIOS + EC regions for rebuild / restore |
-| **`acpidump` / SSDT/DSDT** from CachyOS or Windows | Porting ACPI and EC methods |
-| **`inteltool` / GPIO / PIRQ dumps** | Board config for coreboot |
+| BIOS updater LY320 v1.05 | Capsule / PEI-DXE / VBT clues; stock restore |
+| ME package matching major on device | Region reference; HAP / soft-disable research |
+| EC firmware (if separate) | Often inside BIOS; hard blocker for coreboot |
+
+Also capture (not from Razer):
+
+| Asset | Why | Status |
+|-------|-----|--------|
+| Full SPI ROM dump | IFD + ME + BIOS restore / rebuild | Internal dump done — see [FLASH.md](FLASH.md) hash |
+| `acpidump` / DSDT+SSDTs | ACPI + EC methods | Captured locally (not in git) |
+| `inteltool` / GPIO / PIRQ | coreboot board config | TBD |
 
 ## Do not need for BIOS conversion
 
-Windows-only packages on that page are **OS drivers**, not flash ingredients:
+Windows-only packages on Answer 4566 (skip for EmberROM):
 
-- Intel Chipset / Serial IO / DPTF (Windows)
+- Intel Chipset / Serial IO / DPTF
 - Intel Iris / NVIDIA GTX 1650 / GeForce Experience
-- Intel AX201 Wi‑Fi / Bluetooth (Windows)
+- Intel AX201 Wi‑Fi / Bluetooth
 - Thunderbolt 3 Windows driver
-
-Linux (CachyOS) uses in-kernel or distro packages for those. They do not help build coreboot.
 
 ## Handling rules
 
-1. Download into repo-root `vendor/` (gitignored). Record SHA-256 here when collected.
-2. **Never commit** full BIOS/ME/EC images or updater EXEs to this repo.
-3. Prefer documenting **extraction steps + hashes** so others can fetch from Razer.
+1. Download into repo-root `vendor/` (gitignored). Record SHA-256 below.  
+2. **Never commit** BIOS/ME/EC images or updater EXEs.  
+3. Document **versions, hashes, and URLs** only.  
 4. Before applying any official updater, back up NVRAM/boot state — Blade Stealth models have hit **NVRAM Volume Full** after DBX/fwupd updates.
 
-## Hash log (fill in when downloaded)
+## Hash log
 
 ```text
-# date | sha256 | filename | notes
+# date       | sha256 | filename | notes
+# 2026-10-21 | e729ca00f6ef95d70a6340f986bd5a55968166adf70f602ee92d7be1d09fde1 | (local SPI dump) | internal MTD/flashrom — see FLASH.md; binary not in git
+#            | (pending) | LY320-BIOSv0105* | download from rzr.to/H1kYs
 ```
 
-## Related pages
+## Related
 
-- Same family (non-GTX / early 2019) may list different BIOS/EC — do not mix blindly.
-- ME security advisories packaged by Razer are useful for **version archaeology**, not as a substitute for a device dump.
+- Same family (Mercury White / early 2019) may differ — do not mix SKUs blindly.  
+- SPI dump + recovery: [FLASH.md](FLASH.md) · [RECOVERY.md](RECOVERY.md).
