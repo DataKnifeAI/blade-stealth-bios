@@ -15,4 +15,4 @@ Default stack: **coreboot** (+ payload such as edk2 / SeaBIOS / LinuxBoot). Libr
 
 Modern Intel platforms typically still need FSP and a working ME region. EmberROM aims for **maximum open control**, not a promise of zero blobs on every SoC.
 
-Per-board port notes: `targets/<board>/COREBOOT.md`.
+Per-board port notes: `targets/<board>/COREBOOT.md`. Ice Lake / EmberROM board WIP lives on [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot); upstream contributions go through coreboot Gerrit.

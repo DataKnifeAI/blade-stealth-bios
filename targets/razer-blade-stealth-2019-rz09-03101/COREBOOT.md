@@ -1,5 +1,20 @@
 # coreboot port plan
 
+> **Naming note:** early planning sometimes said “Skylake.” This board is **Ice Lake** (i7-1065G7). Skylake remains on mainline; Ice Lake was removed from master in [CL 72008](https://review.coreboot.org/c/coreboot/+/72008). The EmberROM fork targets **Ice Lake revive + this Blade board**, not a Skylake port.
+
+## Development fork
+
+| Item | Value |
+|------|--------|
+| Fork | [github.com/DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) |
+| Tracks | upstream `coreboot/coreboot` **main** |
+| WIP branch | [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake) (empty WIP from `main`; SoC restore lands here later) |
+| Upstream contributions | **Gerrit only** — [review.coreboot.org](https://review.coreboot.org/). Do not open GitHub PRs against upstream `coreboot/coreboot`. |
+
+**Workflow:** develop Ice Lake SoC revive and `mb/razer/…` board work on the DataKnifeAI fork; when cold boot + basics are solid, propose clean changes via coreboot Gerrit. The GitHub fork is a WIP staging area, not an upstream PR channel.
+
+Ice Lake SoC / CRB code left mainline in [CL 72008](https://review.coreboot.org/c/coreboot/+/72008) (post–4.19). Pre-removal history (e.g. 4.19 branch / parent of that drop) is the reference for restore work; do not confuse with still-supported Skylake.
+
 ## Prior art
 
 | Work | Status | Link |
@@ -34,4 +49,4 @@ See [GOALS.md](GOALS.md). Target is **feature parity with a proper coreboot lapt
 
 ## This target’s role in EmberROM
 
-Board-specific notes for the shared [port process](../../docs/process/port.md). Patches should aim at upstream coreboot when ready. No redistributed vendor ROMs.
+Board-specific notes for the shared [port process](../../docs/process/port.md). Patches should aim at upstream coreboot (Gerrit) when ready. No redistributed vendor ROMs.

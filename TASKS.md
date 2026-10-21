@@ -63,12 +63,16 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ## Phase 3 — coreboot port (first target)
 
+### C0. Fork / tree
+- [x] Fork upstream coreboot → [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) (tracks `main`; WIP [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake)) — Ice Lake revive + Blade board (not Skylake; ICL drop [CL 72008](https://review.coreboot.org/c/coreboot/+/72008))
+- [x] Document fork + Gerrit-upstream workflow in target [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)
+
 ### C1. Research baseline
 - [ ] Archive notes from [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) and Mimoja PoC
 - [ ] Map Ice Lake FSP / microcode / libgfxinit requirements
 - [~] EC: ACPI map started (`EC0`, `LIDS`, `MLBX`); confirm IT8320VG + protocol next
 
-### C2. Board bring-up (out of tree first) — aim P0 parity ([GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md))
+### C2. Board bring-up (on DataKnifeAI fork first) — aim P0 parity ([GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md))
 - [ ] Board skeleton `mb/razer/blade_stealth_icl` (or revive abandoned patch)
 - [ ] Memory init + payload boot (SeaBIOS / edk2 / LinuxBoot)
 - [ ] eDP + input + NVMe + USB
@@ -85,6 +89,6 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 ## Phase 4 — EmberROM tooling / upstream
 
 - [ ] Shared helpers under `tools/` (hash log, dump verify, IFD summary)
-- [ ] Propose coreboot Gerrit change when cold boot + basics work
+- [ ] Propose coreboot Gerrit change when cold boot + basics work (develop on [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot); do not use GitHub PRs for upstream)
 - [ ] Link from [dataknife.ai](https://dataknife.ai) catalog when ready
 - [ ] Second laptop target (TBD) using [add-target](docs/process/add-target.md)

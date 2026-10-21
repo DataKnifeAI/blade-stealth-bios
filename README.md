@@ -62,7 +62,9 @@ emberrom/
 ## Related prior art
 
 - [coreboot](https://www.coreboot.org/) / [Libreboot](https://libreboot.org/) (supported boards only)
+- EmberROM WIP fork: [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) (`emberrom/icelake` — Ice Lake revive + Blade board; upstream via Gerrit, not GitHub PRs)
 - Abandoned Ice Lake Stealth work: [coreboot CL 37565](https://review.coreboot.org/c/coreboot/+/37565)
+- Ice Lake removed from mainline: [CL 72008](https://review.coreboot.org/c/coreboot/+/72008)
 
 ## License
 
