@@ -7,13 +7,38 @@
 | Item | Value |
 |------|--------|
 | Fork | [github.com/DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) |
-| Tracks | upstream `coreboot/coreboot` **main** |
-| WIP branch | [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake) (empty WIP from `main`; SoC restore lands here later) |
+| Local clone | `/home/lee/Projects/coreboot` |
+| Remotes | `origin` = DataKnifeAI/coreboot; `upstream` = https://review.coreboot.org/coreboot.git |
+| Reference branch | [`emberrom/icelake-ref`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake-ref) — tip of upstream `4.19_branch` (**`79a11950acfc55e6f7a2e9c673991c1dafc59f91`**); Ice Lake SoC present |
+| WIP branch | [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake) — `icelake-ref` + cherry-picked [CL 37565 PS16](https://review.coreboot.org/c/coreboot/+/37565) (**`386d05a1f8f27b7dcaaba5f763bca1e5c2e4e5bc`**) |
 | Upstream contributions | **Gerrit only** — [review.coreboot.org](https://review.coreboot.org/). Do not open GitHub PRs against upstream `coreboot/coreboot`. |
 
-**Workflow:** develop Ice Lake SoC revive and `mb/razer/…` board work on the DataKnifeAI fork; when cold boot + basics are solid, propose clean changes via coreboot Gerrit. The GitHub fork is a WIP staging area, not an upstream PR channel.
+**Workflow:** board bring-up stays on the 4.19-era tree (`emberrom/icelake*`) where `src/soc/intel/icelake` still exists. When cold boot + basics are solid, rebase/port forward toward modern main (post–[CL 72008](https://review.coreboot.org/c/coreboot/+/72008) SoC drop) and propose clean changes via coreboot Gerrit. The GitHub fork is a WIP staging area, not an upstream PR channel.
 
-Ice Lake SoC / CRB code left mainline in [CL 72008](https://review.coreboot.org/c/coreboot/+/72008) (post–4.19). Pre-removal history (e.g. 4.19 branch / parent of that drop) is the reference for restore work; do not confuse with still-supported Skylake.
+Ice Lake SoC / CRB code left mainline in [CL 72008](https://review.coreboot.org/c/coreboot/+/72008) (post–4.19). Do not confuse with still-supported Skylake.
+
+### Checkout recipe
+
+```bash
+git clone https://github.com/DataKnifeAI/coreboot.git
+cd coreboot
+git remote add upstream https://review.coreboot.org/coreboot.git
+# Reference tree (SoC only, no EmberROM board commit):
+git fetch origin emberrom/icelake-ref && git checkout emberrom/icelake-ref
+# Board WIP (CL 37565 applied):
+git fetch origin emberrom/icelake && git checkout emberrom/icelake
+```
+
+### CL 37565 apply status (2026-10-21)
+
+| Item | Status |
+|------|--------|
+| Source | `git fetch upstream refs/changes/65/37565/16` → `43990910d8876d162a1fb101be4d99d3eeca66c1` |
+| Author credit | Johanna Schander / Mimoja — `Signed-off-by: Johanna Schander <coreboot@mimoja.de>` preserved; `(cherry picked from …)` trailer kept |
+| Result | **Clean cherry-pick** onto `emberrom/icelake-ref` (no conflicts). Adds `src/mainboard/razer/blade_stealth_icl/` (LY320) |
+| Still missing (upstream CL notes) | ACPI/power/advanced init, EC (IT8320VG), graphics bring-up; GTX Max-Q SKU (03101) needs separate verification vs Mercury White prior art |
+
+Do **not** treat this as a flashable port. Next work is FSP/blob wiring, `make menuconfig` board select smoke-test, then memory-init / payload bring-up on hardware with external recovery ready.
 
 ## Prior art
 

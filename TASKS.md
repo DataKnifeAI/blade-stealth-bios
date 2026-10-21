@@ -64,16 +64,19 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 ## Phase 3 — coreboot port (first target)
 
 ### C0. Fork / tree
-- [x] Fork upstream coreboot → [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) (tracks `main`; WIP [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake)) — Ice Lake revive + Blade board (not Skylake; ICL drop [CL 72008](https://review.coreboot.org/c/coreboot/+/72008))
-- [x] Document fork + Gerrit-upstream workflow in target [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)
+- [x] Fork upstream coreboot → [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot)
+- [x] Reference branch [`emberrom/icelake-ref`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake-ref) from upstream `4.19_branch` (`79a11950ac` — Ice Lake SoC present; ICL drop [CL 72008](https://review.coreboot.org/c/coreboot/+/72008) is post–4.19)
+- [x] WIP [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake) reset onto ref + [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) PS16 (`386d05a1f8`, clean cherry-pick; credit Johanna Schander / Mimoja)
+- [x] Document fork + Gerrit-upstream workflow + checkout recipe in target [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)
 
 ### C1. Research baseline
-- [ ] Archive notes from [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) and Mimoja PoC
-- [ ] Map Ice Lake FSP / microcode / libgfxinit requirements
+- [x] Archive / apply [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) PS16 onto 4.19-era tree (see [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)); deeper Mimoja PoC notes still TBD
+- [ ] Map Ice Lake FSP / microcode / libgfxinit requirements for 4.19-era build
 - [~] EC: ACPI map started (`EC0`, `LIDS`, `MLBX`); confirm IT8320VG + protocol next
 
 ### C2. Board bring-up (on DataKnifeAI fork first) — aim P0 parity ([GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md))
-- [ ] Board skeleton `mb/razer/blade_stealth_icl` (or revive abandoned patch)
+- [x] Board skeleton `mb/razer/blade_stealth_icl` from CL 37565 (Mercury White prior art; GTX 03101 still unverified)
+- [ ] `make menuconfig` / build smoke-test on `emberrom/icelake` (FSP blobs local; no flash)
 - [ ] Memory init + payload boot (SeaBIOS / edk2 / LinuxBoot)
 - [ ] eDP + input + NVMe + USB
 - [ ] ACPI, lid, battery, thermal, **suspend/resume** — blocked on EC understanding

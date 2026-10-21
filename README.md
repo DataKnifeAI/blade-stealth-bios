@@ -62,8 +62,8 @@ emberrom/
 ## Related prior art
 
 - [coreboot](https://www.coreboot.org/) / [Libreboot](https://libreboot.org/) (supported boards only)
-- EmberROM WIP fork: [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) (`emberrom/icelake` — Ice Lake revive + Blade board; upstream via Gerrit, not GitHub PRs)
-- Abandoned Ice Lake Stealth work: [coreboot CL 37565](https://review.coreboot.org/c/coreboot/+/37565)
+- EmberROM WIP fork: [DataKnifeAI/coreboot](https://github.com/DataKnifeAI/coreboot) — [`emberrom/icelake-ref`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake-ref) (upstream `4.19_branch`) + [`emberrom/icelake`](https://github.com/DataKnifeAI/coreboot/tree/emberrom/icelake) (CL 37565 board WIP); upstream via Gerrit, not GitHub PRs — [COREBOOT.md](targets/razer-blade-stealth-2019-rz09-03101/COREBOOT.md)
+- Abandoned Ice Lake Stealth work (now cherry-picked onto fork): [coreboot CL 37565](https://review.coreboot.org/c/coreboot/+/37565)
 - Ice Lake removed from mainline: [CL 72008](https://review.coreboot.org/c/coreboot/+/72008)
 
 ## License
