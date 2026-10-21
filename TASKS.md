@@ -20,8 +20,9 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 
 ### S1. Reproduce failure modes / goals
 - [x] Owner goals: CachyOS end-state; Ubuntu temporary; buy external programmer; coreboot **feature parity** (P0) — [GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md)
-- [x] Confirmed stock issue: **sleep / suspend broken**
-- [ ] Characterize suspend (no wake vs re-suspend loop vs blank; s2idle/deep; lid quirk; GPU path) on Ubuntu, then CachyOS
+- [x] Confirmed stock issue: **sleep / suspend broken** (GUI); see [ANALYSIS.md](targets/razer-blade-stealth-2019-rz09-03101/ANALYSIS.md)
+- [x] Lab characterize on Ubuntu: `rtcwake` deep+s2idle succeed; `_WAK`/`VRTC` ACPI errors; nouveau+i915; lid quirk open
+- [ ] Interactive failure mode (blank / lid loop) + s2idle daily trial + nouveau blacklist; retest on CachyOS
 - [x] Record BIOS / EC / MCU from Aptio Main (ME + Advanced/Security/Boot settings still TBD)
 - [x] Record ME version (**13.0.46.1718**) and Secure Boot (**off** on this unit); CSM / TB setup options still TBD from Aptio
 
@@ -52,8 +53,10 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 - [ ] Archive verified dump offline (never commit)
 
 ### V3. Extract / analyze
-- [ ] Split IFD regions (BIOS / ME / EC / flash descriptor)
+- [x] Split IFD regions (FD / ME / BIOS) via `tools/ifd_split.py` — **no IFD EC region**
 - [x] Capture ACPI tables from running system (`acpidump` — local only)
+- [x] First-pass ACPI/EC notes (lid, `_WAK`/`RTEC`/`VRTC`, MLBX 0x300) — [ANALYSIS.md](targets/razer-blade-stealth-2019-rz09-03101/ANALYSIS.md)
+- [ ] UEFI volume / VBT map inside BIOS region
 - [ ] Compare updater capsule contents vs SPI dump
 
 ---
@@ -63,7 +66,7 @@ Legend: `[ ]` pending · `[~]` in progress · `[x]` done
 ### C1. Research baseline
 - [ ] Archive notes from [CL 37565](https://review.coreboot.org/c/coreboot/+/37565) and Mimoja PoC
 - [ ] Map Ice Lake FSP / microcode / libgfxinit requirements
-- [ ] Document IT8320VG EC: ACPI methods, battery, keyboard, USB-PD
+- [~] EC: ACPI map started (`EC0`, `LIDS`, `MLBX`); confirm IT8320VG + protocol next
 
 ### C2. Board bring-up (out of tree first) — aim P0 parity ([GOALS.md](targets/razer-blade-stealth-2019-rz09-03101/GOALS.md))
 - [ ] Board skeleton `mb/razer/blade_stealth_icl` (or revive abandoned patch)

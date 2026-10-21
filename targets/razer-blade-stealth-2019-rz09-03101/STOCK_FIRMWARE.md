@@ -20,9 +20,20 @@ Matches Razer’s public BIOS **v1.05** package for RZ09-03101 — no newer stoc
 
 | Issue | Notes |
 |-------|--------|
-| **Sleep / suspend broken** | Owner-confirmed under current temporary Ubuntu. Primary stock-firmware blocker for daily use / CachyOS. |
+| **Sleep / suspend broken** | Owner-confirmed (GUI / daily use). Lab `rtcwake` **deep** and **s2idle** both *complete* with RTC wake — see [ANALYSIS.md](ANALYSIS.md). |
+| Deep resume AML | `ACPI Error: AE_NOT_EXIST` while running `\_WAK` (ties to `EC0.RTEC` / missing SystemCMOS `VRTC` handler) |
+| Boot EC AML | `EC0.RTEC` / `EC0._REG` abort every boot (same `VRTC`) |
+| GPU path | **nouveau** + **i915**; eDP on i915; lid quirk already `[open]` |
 | Secure Boot | Off on reference unit ([INVENTORY.md](INVENTORY.md)) |
 | OS | Ubuntu temporary; destination **CachyOS** |
+
+### Stock workaround candidates (unproven for GUI)
+
+```text
+mem_sleep_default=s2idle
+# optional still: button.lid_init_state=open  (already default quirk on this DMI)
+# try iGPU-only: blacklist nouveau
+```
 
 ## Known issue classes (Blade Stealth family)
 
@@ -36,25 +47,16 @@ Matches Razer’s public BIOS **v1.05** package for RZ09-03101 — no newer stoc
 
 ## Suspend debugging checklist (stock)
 
-Reproduce and record on Ubuntu first, then CachyOS:
+Lab progress in [ANALYSIS.md](ANALYSIS.md). Still need **interactive** failure mode:
 
-```bash
-# How does it fail? no wake / instant re-suspend / black screen / lid loop?
-journalctl -b -p warning..alert | rg -i 'suspend|resume|lid|nvidia|i915|acpi'
-cat /sys/power/mem_sleep
-# try:
-#   echo s2idle | sudo tee /sys/power/mem_sleep
-# cmdline candidates:
-#   button.lid_init_state=open
-#   mem_sleep_default=s2idle
-#   nvidia path: proprietary vs nouveau — note which is loaded
-```
-
-- [ ] Failure mode written down (no wake vs re-suspend loop vs blank panel)
-- [ ] `mem_sleep` / s2idle vs deep tested
-- [ ] `button.lid_init_state=open` tested
-- [ ] iGPU-only vs hybrid (nouveau / NVIDIA) noted
-- [ ] Same tests after CachyOS install
+- [x] `rtcwake` deep + s2idle (both succeed with RTC)
+- [x] Note `_WAK` / `VRTC` ACPI errors
+- [x] Note nouveau+i915; lid quirk open
+- [ ] Owner: describe GUI failure (blank panel / no wake / lid re-suspend loop)
+- [ ] Try `mem_sleep_default=s2idle` for daily use
+- [ ] Try blacklist nouveau (iGPU-only)
+- [ ] Lid-close behavior with logind
+- [ ] Retest on CachyOS
 
 ## Working notes
 
