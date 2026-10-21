@@ -1,0 +1,28 @@
+# Vendor firmware blobs (proprietary — never commit)
+vendor/**
+!vendor/README.md
+*.rom
+*.bin
+*.fd
+*.cap
+*.bio
+*.efi
+*.exe
+*.zip
+
+# Local extracts / analysis
+extract/**
+dumps/**
+!dumps/README.md
+out/
+build/
+*.me
+*.ifd
+
+# Editor / OS
+.DS_Store
+*~
+*.swp
+.idea/
+.vscode/
+.cursor/skills/
